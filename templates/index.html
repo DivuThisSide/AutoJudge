@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AutoJudge | Difficulty Predictor</title>
+
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(120deg, #1e3c72, #2a5298);
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e3c72;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-top: 20px;
+            margin-bottom: 8px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            resize: vertical;
+            transition: border 0.2s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border: 1px solid #1e3c72;
+        }
+
+        button {
+            margin-top: 25px;
+            width: 100%;
+            padding: 14px;
+            background: #1e3c72;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #16315d;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f4f7fb;
+            border-left: 6px solid #1e3c72;
+            border-radius: 8px;
+        }
+
+        .result h3 {
+            margin: 8px 0;
+            color: #1e3c72;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: white;
+            font-size: 14px;
+        }
+
+        .easy {
+            background: #2ecc71;
+        }
+
+        .medium {
+            background: #f1c40f;
+            color: #333;
+        }
+
+        .hard {
+            background: #e74c3c;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 13px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>AutoJudge</h1>
+    <p class="subtitle">
+        Automatic Programming Problem Difficulty Predictor
+    </p>
+
+    <form method="post">
+        <label>Problem Description</label>
+        <textarea name="description" rows="6" placeholder="Paste the full problem statement here..." required></textarea>
+
+        <label>Input Description</label>
+        <textarea name="input_desc" rows="4" placeholder="Describe the input format..." required></textarea>
+
+        <label>Output Description</label>
+        <textarea name="output_desc" rows="4" placeholder="Describe the output format..." required></textarea>
+
+        <button type="submit">Predict Difficulty</button>
+    </form>
+
+    {% if predicted_class %}
+    <div class="result">
+        <h3>
+            Predicted Difficulty:
+            {% if predicted_class.lower() == 'easy' %}
+                <span class="badge easy">Easy</span>
+            {% elif predicted_class.lower() == 'medium' %}
+                <span class="badge medium">Medium</span>
+            {% else %}
+                <span class="badge hard">Hard</span>
+            {% endif %}
+        </h3>
+
+        <h3>
+            Predicted Difficulty Score:
+            <b>{{ predicted_score }}</b>
+            <span style="font-size:13px; color:#555;">
+                (relative scale)
+            </span>
+        </h3>
+    </div>
+    {% endif %}
+
+    <div class="footer">
+        AutoJudge · Machine Learning Project · Text-Based Difficulty Prediction
+    </div>
+</div>
+
+</body>
+</html>
