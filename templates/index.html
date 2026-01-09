@@ -2,169 +2,168 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AutoJudge | Difficulty Predictor</title>
-
-    <style>
-        body {
-            font-family: "Segoe UI", Arial, sans-serif;
-            background: linear-gradient(120deg, #1e3c72, #2a5298);
-            margin: 0;
-            padding: 0;
-            color: #333;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 40px auto;
-            background: #ffffff;
-            padding: 30px 40px;
-            border-radius: 12px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-        }
-
-        h1 {
-            text-align: center;
-            color: #1e3c72;
-            margin-bottom: 10px;
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 30px;
-        }
-
-        label {
-            font-weight: 600;
-            display: block;
-            margin-top: 20px;
-            margin-bottom: 8px;
-        }
-
-        textarea {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-            resize: vertical;
-            transition: border 0.2s;
-        }
-
-        textarea:focus {
-            outline: none;
-            border: 1px solid #1e3c72;
-        }
-
-        button {
-            margin-top: 25px;
-            width: 100%;
-            padding: 14px;
-            background: #1e3c72;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        button:hover {
-            background: #16315d;
-        }
-
-        .result {
-            margin-top: 30px;
-            padding: 20px;
-            background: #f4f7fb;
-            border-left: 6px solid #1e3c72;
-            border-radius: 8px;
-        }
-
-        .result h3 {
-            margin: 8px 0;
-            color: #1e3c72;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-weight: bold;
-            color: white;
-            font-size: 14px;
-        }
-
-        .easy {
-            background: #2ecc71;
-        }
-
-        .medium {
-            background: #f1c40f;
-            color: #333;
-        }
-
-        .hard {
-            background: #e74c3c;
-        }
-
-        .footer {
-            margin-top: 40px;
-            text-align: center;
-            font-size: 13px;
-            color: #888;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoJudge - Problem Difficulty Predictor</title>
+    <link rel="stylesheet" href="./static/style.css">
 </head>
 <body>
-
-<div class="container">
-    <h1>AutoJudge</h1>
-    <p class="subtitle">
-        Automatic Programming Problem Difficulty Predictor
-    </p>
-
-    <form method="post">
-        <label>Problem Description</label>
-        <textarea name="description" rows="6" placeholder="Paste the full problem statement here..." required></textarea>
-
-        <label>Input Description</label>
-        <textarea name="input_desc" rows="4" placeholder="Describe the input format..." required></textarea>
-
-        <label>Output Description</label>
-        <textarea name="output_desc" rows="4" placeholder="Describe the output format..." required></textarea>
-
-        <button type="submit">Predict Difficulty</button>
-    </form>
-
-    {% if predicted_class %}
-    <div class="result">
-        <h3>
-            Predicted Difficulty:
-            {% if predicted_class.lower() == 'easy' %}
-                <span class="badge easy">Easy</span>
-            {% elif predicted_class.lower() == 'medium' %}
-                <span class="badge medium">Medium</span>
-            {% else %}
-                <span class="badge hard">Hard</span>
-            {% endif %}
-        </h3>
-
-        <h3>
-            Predicted Difficulty Score:
-            <b>{{ predicted_score }}</b>
-            <span style="font-size:13px; color:#555;">
-                (relative scale)
-            </span>
-        </h3>
+    <div class="container">
+        <div class="header">
+            <h1>AutoJudge</h1>
+            <p>AI-Powered Programming Problem Difficulty Predictor</p>
+        </div>
+        
+        <div class="content">
+            <form id="predictionForm">
+                <div class="form-group">
+                    <label for="title">Problem Title</label>
+                    <input type="text" id="title" name="title" 
+                           placeholder="e.g., Two Sum Problem" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Problem Description</label>
+                    <textarea id="description" name="description" 
+                              placeholder="Describe the problem..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="input_desc">Input Description</label>
+                    <textarea id="input_desc" name="input_desc" 
+                              placeholder="Describe the input format..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="output_desc">Output Description</label>
+                    <textarea id="output_desc" name="output_desc" 
+                              placeholder="Describe the expected output..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn" id="submitBtn">
+                    Predict Difficulty
+                </button>
+            </form>
+            
+            <div id="loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Analyzing problem...</p>
+            </div>
+            
+            <div id="result" class="result">
+                <div class="result-header">
+                    <div>
+                        <span id="difficultyBadge" class="difficulty-badge"></span>
+                    </div>
+                    <div>
+                        <div class="score-display" id="score"></div>
+                        <div style="text-align: center; color: #666; font-size: 0.9em;">Difficulty Score</div>
+                    </div>
+                </div>
+                
+                <div class="probabilities" id="probabilities"></div>
+                
+                <div class="stats" id="stats"></div>
+                
+                <div class="insights">
+                    <h3>Analysis Insights</h3>
+                    <div id="insightsList"></div>
+                </div>
+            </div>
+            
+            <div id="error" class="error" style="display: none;"></div>
+        </div>
     </div>
-    {% endif %}
-
-    <div class="footer">
-        AutoJudge · Machine Learning Project · Text-Based Difficulty Prediction
-    </div>
-</div>
-
+    
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(e.target);
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').classList.remove('show');
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('submitBtn').disabled = true;
+            
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    displayResults(data);
+                } else {
+                    showError(data.error || 'Prediction failed');
+                }
+            } catch (error) {
+                showError('Network error: ' + error.message);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('submitBtn').disabled = false;
+            }
+        });
+        
+        function displayResults(data) {
+            // Difficulty badge
+            const badge = document.getElementById('difficultyBadge');
+            badge.textContent = data.class;
+            badge.className = 'difficulty-badge difficulty-' + data.class.toLowerCase();
+            
+            // Score
+            document.getElementById('score').textContent = data.score;
+            
+            // Probabilities
+            const probDiv = document.getElementById('probabilities');
+            probDiv.innerHTML = '';
+            for (const [cls, prob] of Object.entries(data.probabilities)) {
+                probDiv.innerHTML += `
+                    <div class="prob-item">
+                        <div class="prob-label">${cls}</div>
+                        <div class="prob-value">${prob}%</div>
+                    </div>
+                `;
+            }
+            
+            // Stats
+            const statsDiv = document.getElementById('stats');
+            statsDiv.innerHTML = `
+                <div class="stat-box">
+                    <div class="stat-value">${data.stats.word_count}</div>
+                    <div class="stat-label">Words</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">${data.stats.max_constraint}</div>
+                    <div class="stat-label">Max Constraint</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">${data.stats.complexity_indicators}</div>
+                    <div class="stat-label">Complexity Signals</div>
+                </div>
+            `;
+            
+            // Insights
+            const insightsDiv = document.getElementById('insightsList');
+            insightsDiv.innerHTML = '';
+            data.insights.forEach(insight => {
+                insightsDiv.innerHTML += `
+                    <div class="insight-item">✓ ${insight}</div>
+                `;
+            });
+            
+            // Show result
+            document.getElementById('result').classList.add('show');
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = '❌ ' + message;
+            errorDiv.style.display = 'block';
+        }
+    </script>
 </body>
 </html>
